@@ -1,6 +1,9 @@
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-  export let data;
+  
+  //let { children } = $props();
+  const { children, data } = $props();
+  //import "../app.css";  
   import { session } from '$lib/stores/session';
   import { onMount } from 'svelte';
 
@@ -12,4 +15,6 @@
   });
 </script>
 
-<slot />
+{@render children()}
+
+

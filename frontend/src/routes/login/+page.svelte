@@ -33,6 +33,16 @@
   }
 </script>
 
+<h1 class="text-3xl font-bold underline">
+  UMS - CDE ANU
+</h1>
+<style lang="postcss">
+  @reference "tailwindcss";
+  :global(html) {
+    background-color: theme(--color-gray-100);
+  }
+</style>
+
 <form on:submit|preventDefault={login}>
   <input bind:value={username} placeholder="Username" required />
   <input type="password" bind:value={password} placeholder="Password" required />

@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { session } from "$lib/stores/session";
   import LogOutButton from "$lib/components/LogoutButton.svelte";
+  import UserList from "$lib/components/UserList.svelte";
 
   let users: any[] = [];
   let error: string | null = null;
@@ -56,7 +57,7 @@
   }
 
   onMount(() => {
-    if (isAdmin) fetchUsers();
+    if (user) fetchUsers();
   });
 
   function startEdit(u: any) {
@@ -100,6 +101,10 @@
 <h1>Welcome, {user?.username}!</h1>
 <p>Your role: {user?.role}</p>
 
+{#if !isAdmin}
+  <h2>User List</h2>
+  <UserList {users}/>
+{/if}
 
 {#if isAdmin}
   <h2>Admin – User Management</h2>
@@ -110,7 +115,12 @@
     <form on:submit|preventDefault={createUser}>
       <input bind:value={newUsername} placeholder="Username" required />
       <input bind:value={newEmail} placeholder="Email" required />
-      <input type="password" bind:value={newPassword} placeholder="Password" required />
+      <input
+        type="password"
+        bind:value={newPassword}
+        placeholder="Password"
+        required
+      />
       <select bind:value={newRole}>
         <option value="user">User</option>
         <option value="admin">Admin</option>
