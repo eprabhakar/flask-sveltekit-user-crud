@@ -1,7 +1,7 @@
 
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-  
+  import "../app.css";
   //let { children } = $props();
   const { children, data } = $props();
   //import "../app.css";  

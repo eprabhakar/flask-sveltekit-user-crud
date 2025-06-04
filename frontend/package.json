@@ -23,6 +23,7 @@
 	"description": "Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).",
 	"main": "svelte.config.js",
 	"dependencies": {
+		"@tailwindcss/vite": "^4.1.8",
 		"acorn": "^8.14.1",
 		"aria-query": "^5.3.2",
 		"axobject-query": "^4.1.0",
@@ -60,6 +61,7 @@
 		"set-cookie-parser": "^2.7.1",
 		"sirv": "^3.0.1",
 		"source-map-js": "^1.2.1",
+		"tailwindcss": "^4.1.8",
 		"tinyglobby": "^0.2.14",
 		"totalist": "^3.0.1",
 		"update-browserslist-db": "^1.1.3",
