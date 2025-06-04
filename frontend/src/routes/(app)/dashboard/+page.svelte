@@ -102,11 +102,9 @@
 <p>Your role: {user?.role}</p>
 
 {#if !isAdmin}
-  <h2>User List</h2>
+  <h2 class="text-xl font-semibold text-gray-800">User List</h2>
   <UserList {users}/>
-{/if}
-
-{#if isAdmin}
+{:else}
   <h2>Admin – User Management</h2>
   {#if error}
     <p style="color: red;">{error}</p>

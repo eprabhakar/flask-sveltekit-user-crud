@@ -33,9 +33,7 @@
   }
 </script>
 
-<h1 class="text-3xl font-bold underline">
-  UMS - CDE ANU
-</h1>
+
 <style lang="postcss">
   @reference "tailwindcss";
   :global(html) {
@@ -43,19 +41,32 @@
   }
 </style>
 
-<form on:submit|preventDefault={login}>
-  <input bind:value={username} placeholder="Username" required />
-  <input type="password" bind:value={password} placeholder="Password" required />
-  <button type="submit">Login</button>
-</form>
+<div class="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
+  <h2 class="text-2xl font-bold text-center text-blue-600 mb-6">Login</h2>
+  <form on:submit|preventDefault={login} class="space-y-4">
+    <input
+      type="text"
+      bind:value={username}
+      placeholder="Username"
+      class="w-full px-4 py-2 border rounded-lg"
+      required
+    />
+    <input
+      type="password"
+      bind:value={password}
+      placeholder="Password"
+      class="w-full px-4 py-2 border rounded-lg"
+      required
+    />
+    <button
+      type="submit"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg"
+    >
+      Sign In
+    </button>
+  </form>
+  <p>Don't have an account? <a href="/register" class="text-blue-600 hover:text-blue-800 underline" >Register</a></p>
+  <p>Forgot your password? <a href="/reset-password" class="text-blue-600 hover:text-blue-800 underline">Reset</a></p>
+</div>
 
-{#if success}
-  <p style="color: green">{success}</p>
-{/if}
 
-{#if error}
-  <p style="color: red">{error}</p>
-{/if}
-
-<p>Don't have an account? <a href="/register">Register here</a></p>
-<p>Forgot your password? <a href="/reset-password">Reset it here</a></p>

@@ -1,8 +1,8 @@
 // frontend/src/routes/+page.server.ts
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions, ServerLoad } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: ServerLoad = async ({ locals }) => {
 	if (locals.user) {
 		throw redirect(302, '/dashboard');
 	} else {
