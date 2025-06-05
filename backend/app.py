@@ -39,7 +39,8 @@ def login():
 @app.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    return '', 204
+    return jsonify({"message": "Logged out"}), 204
+
 
 @app.route('/me')
 def me():

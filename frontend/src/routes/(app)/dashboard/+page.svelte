@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { session } from "$lib/stores/session";
-  import LogOutButton from "$lib/components/LogoutButton.svelte";
-  import UserList from "$lib/components/UserList.svelte";
+  //import UserList from "$lib/components/UserList.svelte";
+  import { goto } from '$app/navigation';
 
   let users: any[] = [];
   let error: string | null = null;
@@ -57,7 +57,10 @@
   }
 
   onMount(() => {
-    if (user) fetchUsers();
+    if (user) 
+      fetchUsers();
+    else
+      goto('/login');   
   });
 
   function startEdit(u: any) {
@@ -103,45 +106,100 @@
 
 {#if !isAdmin}
   <h2 class="text-xl font-semibold text-gray-800">User List</h2>
-  <UserList {users}/>
-{:else}
+  <!--<UserList {users}/> -->
+  <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 bg-white p-4">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Name</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Email</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Role</th>
+          <th class="px-4 py-2 text-sm font-semibold text-gray-700">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {#each users as user}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2 text-sm text-gray-900">{user.username}</td>
+            <td class="px-4 py-2 text-sm text-gray-600">{user.email}</td>
+            <td class="px-4 py-2 text-sm text-gray-600">{user.role}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+{:else }
   <h2>Admin – User Management</h2>
-  {#if error}
-    <p style="color: red;">{error}</p>
-  {:else}
-    <h3>Create New User</h3>
-    <form on:submit|preventDefault={createUser}>
-      <input bind:value={newUsername} placeholder="Username" required />
-      <input bind:value={newEmail} placeholder="Email" required />
-      <input
-        type="password"
-        bind:value={newPassword}
-        placeholder="Password"
-        required
-      />
-      <select bind:value={newRole}>
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
-      <button type="submit">Create</button>
-    </form>
-    <h3>Edit existing User</h3>
-    <ul>
-      {#each users as u}
-        <li>
-          {#if editing === u.id}
-            <input bind:value={editUsername} />
-            <input bind:value={editEmail} />
-            <button on:click={() => saveEdit(u.id)}>Save</button>
-            <button on:click={() => (editing = null)}>Cancel</button>
-          {:else}
-            <strong>{u.username}</strong> – {u.email} ({u.role})
-            <button on:click={() => startEdit(u)}>Edit</button>
-            <button on:click={() => deleteUser(u.id)}>Delete</button>
-          {/if}
-        </li>
-      {/each}
-    </ul>
-  {/if}
+  <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 bg-white p-4">
+    <div class="mt-4">
+      <form on:submit|preventDefault={createUser} class="space-y-4">
+        <input 
+          bind:value={newUsername} 
+          placeholder="Username" 
+          class=" px-4 py-2 border rounded-lg"
+          required 
+        />
+        <input 
+          type="email" bind:value={newEmail} 
+          placeholder="Email" 
+          class="px-4 py-2 border rounded-lg"
+          required 
+        />
+        <input 
+          type="password" bind:value={newPassword} 
+          placeholder="Password" 
+          class="px-4 py-2 border rounded-lg"
+          required 
+        />
+        <select bind:value={newRole} class="px-4 py-2 border rounded-lg">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button 
+          type="submit"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg"
+        >
+          Create User
+        </button>
+      </form>
+    </div>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Name</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Email</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Role</th>
+          <th class="px-4 py-2 text-sm font-semibold text-gray-700">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {#each users as u}
+          <tr class="hover:bg-gray-50">
+            {#if editing === u.id}
+              <td class="px-4 py-2">
+                <input bind:value={editUsername} class="w-full px-2 py-1 border rounded" />
+              </td> 
+              <td class="px-4 py-2">
+                <input bind:value={editEmail} class="w-full px-2 py-1 border rounded"/>
+              </td>
+              <td class="px-4 py-2 space-x-2 text-center">
+                <button on:click={() => saveEdit(u.id)} class="text-green-600 hover:underline">Save</button>
+                <button on:click={() => (editing = null)} class="text-gray-500 hover:underline">Cancel</button>
+              </td>
+            {:else}
+                <td class="px-4 py-2 text-sm text-gray-900">{u.username}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">{u.email}</td>
+                <td class="px-4 py-2 text-sm text-gray-600">{u.role}</td>
+                <td class="px-4 py-2 space-x-2 text-center">
+                  <button on:click={() => startEdit(u)} class="text-blue-600 hover:underline">Edit</button>
+                  <button on:click={() => deleteUser(u.id)} class="text-red-600 hover:underline">Delete</button>
+                </td>
+            {/if}           
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+
+  </div> 
 {/if}
-<LogOutButton />
+
