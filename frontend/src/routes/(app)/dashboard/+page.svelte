@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { session } from "$lib/stores/session";
-  //import UserList from "$lib/components/UserList.svelte";
+  import UserList from "$lib/components/UserList.svelte";
   import { goto } from '$app/navigation';
 
   let users: any[] = [];
@@ -105,59 +105,38 @@
 <p>Your role: {user?.role}</p>
 
 {#if !isAdmin}
-  <h2 class="text-xl font-semibold text-gray-800">User List</h2>
-  <!--<UserList {users}/> -->
-  <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 bg-white p-4">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Name</th>
-          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Email</th>
-          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Role</th>
-          <th class="px-4 py-2 text-sm font-semibold text-gray-700">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-100">
-        {#each users as user}
-          <tr class="hover:bg-gray-50">
-            <td class="px-4 py-2 text-sm text-gray-900">{user.username}</td>
-            <td class="px-4 py-2 text-sm text-gray-600">{user.email}</td>
-            <td class="px-4 py-2 text-sm text-gray-600">{user.role}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+  <UserList {users}/>
 {:else }
   <h2>Admin – User Management</h2>
   <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 bg-white p-4">
     <div class="mt-4">
       <form on:submit|preventDefault={createUser} class="space-y-4">
         <input 
+          type="text"          
           bind:value={newUsername} 
           placeholder="Username" 
-          class=" px-4 py-2 border rounded-lg"
+          class="text-sm px-2 py-1 border rounded-md"
           required 
         />
         <input 
           type="email" bind:value={newEmail} 
           placeholder="Email" 
-          class="px-4 py-2 border rounded-lg"
+          class="text-sm px-2 py-1 border rounded-md"
           required 
         />
         <input 
           type="password" bind:value={newPassword} 
           placeholder="Password" 
-          class="px-4 py-2 border rounded-lg"
+          class="text-sm px-2 py-1 border rounded-md"
           required 
         />
-        <select bind:value={newRole} class="px-4 py-2 border rounded-lg">
+        <select bind:value={newRole} class="text-sm px-2 py-1 border rounded-md">
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
         <button 
           type="submit"
-          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg"
+          class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 rounded-md"
         >
           Create User
         </button>
