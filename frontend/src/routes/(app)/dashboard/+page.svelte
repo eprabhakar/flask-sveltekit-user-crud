@@ -108,7 +108,7 @@
   <UserList {users}/>
 {:else }
   <h2>Admin – User Management</h2>
-  <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 bg-white p-4">
+  <div class="overflow-x-auto shadow-md border border-gray-200 bg-white p-4">
     <div class="mt-4">
       <form on:submit|preventDefault={createUser} class="space-y-4">
         <input 

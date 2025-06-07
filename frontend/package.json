@@ -23,6 +23,7 @@
 	"description": "Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).",
 	"main": "svelte.config.js",
 	"dependencies": {
+		"@popperjs/core": "^2.11.8",
 		"@tailwindcss/vite": "^4.1.8",
 		"acorn": "^8.14.1",
 		"aria-query": "^5.3.2",
@@ -41,6 +42,9 @@
 		"esm-env": "^1.2.2",
 		"esrap": "^1.4.6",
 		"fdir": "^6.4.5",
+		"flowbite": "^3.1.2",
+		"flowbite-svelte": "^1.5.6",
+		"flowbite-svelte-icons": "^2.2.0",
 		"fraction.js": "^4.3.7",
 		"is-reference": "^3.0.3",
 		"kleur": "^4.1.5",
