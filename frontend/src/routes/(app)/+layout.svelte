@@ -7,6 +7,8 @@
   //import "../app.css";  
   import { goto } from '$app/navigation';
   import { session } from '$lib/stores/session';
+  import Navbar from '$lib/components/Navbar.svelte';
+
   import { onMount } from 'svelte';
 
   // Sync server-provided user into store
@@ -17,6 +19,7 @@
   });
 
   async function logout() {
+    console.log('Logging out...');
     await fetch('http://localhost:5000/logout', {
       method: 'POST',
       credentials: 'include'
@@ -33,19 +36,24 @@
   ];
 
   function handleMenuClick(item: any) {
+    console.log('Menu item clicked:', item.name + ' - href:', item.href, ' - action:', item.action);
     if (item.type === 'logout') {
       logout();
     } else if (item.href) {
       goto(item.href);
     }
   }
-  //let menu = ["Dashboard", "Profile", "Settings", "Logout"];
+  
 </script>
 
 <main class="min-h-screen flex flex-col">
   <!-- Top Navbar -->
   <header class="bg-blue-600 text-white p-4 shadow-md">
     <h1 class="text-xl font-bold">Acharya Nagarjuna University</h1>
+    {#if data?.user} 
+      <Navbar user={data.user} />
+    {/if}
+
   </header>
 
   <!-- Main Layout: Sidebar + Content -->

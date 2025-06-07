@@ -8,7 +8,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 		throw redirect(302, '/login');
 	} else{
 		return {
-			user: locals.user
+			user: locals.user ?? { username: 'Guest', avatar: null }
 		};
 	}
 
