@@ -149,7 +149,7 @@
         <!-- Actions -->
         <div class="flex space-x-1 p-1">
           <button
-            class="inline-flex items-center gap-2 bg-gray-100 text-gray text-sm px-2 py-2  hover:bg-blue-700 transition rounded-md"
+            class="inline-flex items-center gap-2 bg-gray-100 text-gray text-sm px-2 py-2  hover:bg-gray-300 transition rounded-md"
             on:click={toggleCreateForm}
             aria-label="Create New"
           >
@@ -200,7 +200,7 @@
             </select>
             <button 
               type="submit"
-              class="text-sm bg-blue-400 hover:bg-blue-700 text-white font-semibold py-1 px-1"
+              class="text-sm bg-gray-100 hover:bg-gray-300 text-black py-1 px-2"
             >
               Create User
             </button>
@@ -221,7 +221,7 @@
             </div>
             <button
               type="submit"
-              class="text-sm bg-blue-400 hover:bg-blue-700 text-white font-semibold py-1 px-1"
+              class="text-sm bg-gray-100 hover:bg-gray-300 text-black py-1 px-2"
             >
               Search
             </button>
@@ -263,89 +263,12 @@
                     <button on:click={() => deleteUser(user.id)} class="text-red-600 hover:underline">Delete</button>
                   </td>
                 {/if}
-
               </tr>
             {/each}
           </tbody>
         </table>
       </div>
-
     </div>
-
   </main>
-
-  <!-- h2>Admin – User Management</h2>
-  <div class="overflow-x-auto shadow-md border border-gray-200 bg-white p-4">
-    <div class="mt-4">
-      <form on:submit|preventDefault={createUser} class="space-y-4">
-        <input 
-          type="text"          
-          bind:value={newUsername} 
-          placeholder="Username" 
-          class="text-sm px-2 py-1 border rounded-md"
-          required 
-        />
-        <input 
-          type="email" bind:value={newEmail} 
-          placeholder="Email" 
-          class="text-sm px-2 py-1 border rounded-md"
-          required 
-        />
-        <input 
-          type="password" bind:value={newPassword} 
-          placeholder="Password" 
-          class="text-sm px-2 py-1 border rounded-md"
-          required 
-        />
-        <select bind:value={newRole} class="text-sm px-2 py-1 border rounded-md">
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-        <button 
-          type="submit"
-          class="text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 rounded-md"
-        >
-          Create User
-        </button>
-      </form>
-    </div>
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Name</th>
-          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Email</th>
-          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Role</th>
-          <th class="px-4 py-2 text-sm font-semibold text-gray-700">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-100">
-        {#each users as u}
-          <tr class="hover:bg-gray-50">
-            {#if editing === u.id}
-              <td class="px-4 py-2">
-                <input bind:value={editUsername} class="w-full px-2 py-1 border rounded" />
-              </td> 
-              <td class="px-4 py-2">
-                <input bind:value={editEmail} class="w-full px-2 py-1 border rounded"/>
-              </td>
-              <td class="px-4 py-2 space-x-2 text-center">
-                <button on:click={() => saveEdit(u.id)} class="text-green-600 hover:underline">Save</button>
-                <button on:click={() => (editing = null)} class="text-gray-500 hover:underline">Cancel</button>
-              </td>
-            {:else}
-                <td class="px-4 py-2 text-sm text-gray-900">{u.username}</td>
-                <td class="px-4 py-2 text-sm text-gray-600">{u.email}</td>
-                <td class="px-4 py-2 text-sm text-gray-600">{u.role}</td>
-                <td class="px-4 py-2 space-x-2 text-center">
-                  <button on:click={() => startEdit(u)} class="text-blue-600 hover:underline">Edit</button>
-                  <button on:click={() => deleteUser(u.id)} class="text-red-600 hover:underline">Delete</button>
-                </td>
-            {/if}           
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-
-  </div> -->
 {/if}
 
