@@ -63,21 +63,21 @@
 
 
   <!-- Main Layout: Sidebar + Content -->
-  <div class="flex min-h-screen font-poppins text-gray-800 bg-gray-100">
+  <div class="flex min-h-screen font-poppins bg-gray-100">
     <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-md hidden md:block">
-      <div class="p-4 bg-gray-600 border-b border-gray-600 text-white">
+    <aside class="text-white  w-64 min-h-screen">
+      <div class="p-2 bg-gray-600  border-b border-gray-600 text-white">
         <h1 class="text-sm  tracking-wide">Admission Management</h1>
       </div>
-      <div class="bg-gray-100 text-gray-800 h-full">
-        <nav class="divide-y divide-gray-200">
+      <div class="h-full">
+        <nav class=" shadow-lg divide-gray-200">
           {#each menuItems as item}
             <button
               onclick={() => handleMenuClick(item)}
-              class="p-4 block w-full pl-10 pr-6 py-2 text-left text-sm
+              class="p-4 block w-full pl-10 pr-6 py-2 text-gray text-left text-sm
                  hover:bg-gray-600 transition-all duration-150
                 {($page.url.pathname === item.href) 
-                  ? 'bg-gray-400 tracking-wide font-semibold text-white' 
+                  ? 'bg-gray-400 tracking-wide text-gray' 
                   : 'text-gray-500'}"
               >
               {item.name}
@@ -87,20 +87,8 @@
       </div>
     </aside>
 
-    <!-- Sidebar 
-    <Sidebar class="w-64 bg-gray-100 border-r p-4 hidden md:block" style="min-height: 100vh;" >
- 
-      {#each menuItems as item}
-        <SidebarItem onclick={() => handleMenuClick(item)} class="cursor-pointer">
-          <span>{item.icon}</span>  
-          <span class="ml-2">{item.name}</span>
-        </SidebarItem>
-      {/each}
-    </Sidebar> -->
-
-    <!-- Page content goes here -->
-    <section class="flex-1 overflow-auto bg-gray-100 p-6">
-      <div class="max-w-5xl mx-auto bg-white  shadow-md p-6">
+    <section class="flex-1 overflow-auto bg-gray-100 p-4">
+      <div class=" bg-white  shadow-md ">
         {@render children()}<!-- <slot />  This renders the content from +page.svelte -->
       </div>
     </section>
