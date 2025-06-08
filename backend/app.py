@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, session
+from flask import  Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -9,12 +9,37 @@ from flask import abort
 
 load_dotenv()
 
+
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app, supports_credentials=True)
 db.init_app(app)
+
+@app.route('/search', methods=['GET'])
+def search_users():
+    query = request.args.get('q', '').strip()
+
+    if not query:
+        return jsonify({'error': 'Search query is required'}), 400
+
+    # Search by username or email using LIKE
+    users = db.session.query(User).filter(
+        db.or_(
+            User.username.ilike(f'%{query}%'),
+            User.email.ilike(f'%{query}%')
+        )
+    ).all()
+    # Convert to dict for response
+    results = [{
+        'id': user.id,
+        'username': user.username,
+        'email': user.email
+    } for user in users]
+
+    return jsonify(results), 200
 
 @app.route('/register', methods=['POST'])
 def register():

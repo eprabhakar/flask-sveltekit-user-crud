@@ -49,6 +49,7 @@
 		"is-reference": "^3.0.3",
 		"kleur": "^4.1.5",
 		"locate-character": "^3.0.0",
+		"lucide-svelte": "^0.513.0",
 		"magic-string": "^0.30.17",
 		"mri": "^1.2.0",
 		"mrmime": "^2.0.1",
