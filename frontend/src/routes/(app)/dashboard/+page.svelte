@@ -4,6 +4,9 @@
   import UserList from "$lib/components/UserList.svelte";
   import { goto } from '$app/navigation';
   import { Plus, Search } from 'lucide-svelte';
+  import * as api from '$lib/api/users';
+  let filteredUsers: any[] = []; // Users filtered based on search
+
 
   let users: any[] = [];
   let error: string | null = null;
@@ -22,100 +25,97 @@
   let showCreateForm = false;
 
   let query = '';
+  $: displayUsers = query.trim() ? filteredUsers : users;
   let usersOfSearch = [];
 
+  // Toggle create form visibility
   function toggleCreateForm() {
     showCreateForm = !showCreateForm;
   }
 
   let showSearchForm = false;
 
+  // Toggle search form visibility
   function toggleSearchForm() {
     showSearchForm = !showSearchForm;
     if(!showSearchForm) {
       query = ''; // Reset search query when closing the form
-      fetchUsers(); // Fetch all users again
-    } 
-  }
-
-  async function createUser() {
-    const res = await fetch("http://localhost:5000/user", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: newUsername,
-        email: newEmail,
-        password: newPassword,
-        role: newRole,
-      }),
-    });
-
-    if (res.ok) {
-      const user = await res.json();
-      users = [...users, user]; // Update UI
-      newUsername = "";
-      newEmail = "";
-      newPassword = "";
-      newRole = "user";
-    } else {
-      const err = await res.json();
-      alert(err.error);
+      //loadUsers(); // Fetch all users again
     }
   }
 
-  async function fetchUsers() {
-    const res = await fetch("http://localhost:5000/users", {
-      credentials: "include",
-    });
-    if (res.ok) {
-      users = await res.json();
-    } else {
-      const err = await res.json();
-      error = err.error || "Failed to fetch users";
+  // Load users from the API
+  async function loadUsers() {
+    try {
+      users = await api.fetchUsers();
+    } catch (e) {
+      if (e instanceof Error) {
+        error = e.message;
+      } else {
+        error = String(e);
+      }
+      console.error("Failed to load users:", error);
     }
   }
 
-  async function handleSubmit() {
-    console.log("Search query:", query);
-    const res = await fetch(`http://localhost:5000/search?q=${encodeURIComponent(query)}`);
-    users = await res.json();
+  // Handle user creation
+  async function handleCreate() {
+    try {
+      const user = await api.createUser({ username: newUsername, email: newEmail, password: newPassword, role: newRole });
+      users = [...users, user];
+      newUsername = newEmail = newPassword = "";
+    } catch (e) {
+      if (e instanceof Error) {
+        error = e.message;
+      } else {
+        error = String(e);
+      }
+    }
   }
 
-  function handleSearchInput() {
-    //handleSubmit( new Event('submit'));
-  }
-
+  // Load users on mount if user is logged in
   onMount(() => {
-    if (user) 
-      fetchUsers();
-    else
-      goto('/login');   
+    if (user) {
+        loadUsers();
+        console.log("User:"+ api.myname); 
+      }  
+    else goto("/login");
   });
 
+  // Handle search form submission
+  async function handleSearchSubmit() {
+    handleSearchInput();
+  }
+  // Filter users based on search query
+  function handleSearchInput() {
+    const lowerQuery = query.toLowerCase();
+    filteredUsers = users.filter(user =>
+      user.username.toLowerCase().includes(lowerQuery) ||
+      user.email.toLowerCase().includes(lowerQuery)
+    );
+    
+  }
+  // Start editing a user
   function startEdit(u: any) {
     editing = u.id;
     editUsername = u.username;
     editEmail = u.email;
   }
 
-  async function saveEdit(id: number) {
-    const res = await fetch(`http://localhost:5000/users/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        username: editUsername,
-        email: editEmail,
-      }),
-    });
-    if (res.ok) {
-      await fetchUsers();
+  async function handleUpdate(id: number) {
+    try {
+      await api.updateUser(id, { username: editUsername, email: editEmail });
+      await loadUsers();
       editing = null;
-    } else {
-      alert("Failed to update user");
+    } catch (e) {
+      if (e instanceof Error) {
+        error = e.message;
+      } else {
+        error = String(e);
+      }
     }
   }
+
 
   async function deleteUser(id: number) {
     if (!confirm("Are you sure you want to delete this user?")) return;
@@ -130,7 +130,6 @@
     }
   }
 </script>
-
 
 
 {#if !isAdmin}
@@ -174,7 +173,7 @@
       <!-- Main Content Below Header -->
       {#if showCreateForm}
         <div class="mt-4 px-2">
-          <form on:submit|preventDefault={createUser} class="space-y-4">
+          <form on:submit|preventDefault={handleCreate} class="space-y-4">
             <input 
               type="text"          
               bind:value={newUsername} 
@@ -210,7 +209,7 @@
 
       {#if showSearchForm}
         <div class="mt-4 px-2">
-          <form on:submit|preventDefault={handleSubmit} class="w-full max-w-md mb-6 flex gap-2">
+          <form on:submit|preventDefault={handleSearchSubmit} class="w-full max-w-md mb-6 flex gap-2">
             <div class="relative flex-grow">
               <input 
                 type="text" 
@@ -241,7 +240,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 bg-white">
-            {#each users as user}
+            {#each displayUsers as user}
               <tr class="hover:bg-gray-50">
                 {#if editing === user.id}
                   <td class="px-4 py-2">
@@ -251,7 +250,7 @@
                     <input bind:value={editEmail} class="w-full px-2 py-1 border rounded"/>
                   </td>
                   <td class="px-4 py-2 space-x-2 text-center">
-                    <button on:click={() => saveEdit(user.id)} class="text-green-600 hover:underline">Save</button>
+                    <button on:click={() => handleUpdate(user.id)} class="text-green-600 hover:underline">Save</button>
                     <button on:click={() => (editing = null)} class="text-gray-500 hover:underline">Cancel</button>
                   </td>
                 {:else}
