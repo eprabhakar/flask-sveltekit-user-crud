@@ -65,7 +65,7 @@
   <!-- Main Layout: Sidebar + Content -->
   <div class="flex min-h-screen font-poppins bg-gray-100">
     <!-- Sidebar -->
-    <aside class="text-white  w-64 min-h-screen">
+    <aside class="hidden md:block bg-gray-100 text-white  w-64 min-h-screen">
       <div class="p-2 bg-gray-600  border-b border-gray-600 text-white">
         <h1 class="text-sm  tracking-wide">Admission Management</h1>
       </div>

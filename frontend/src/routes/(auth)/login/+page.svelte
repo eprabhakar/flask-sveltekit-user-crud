@@ -29,6 +29,8 @@
       goto('/dashboard');
     } else {
       error = 'Invalid login';
+      const err = await res.json();
+      alert(err.error || "Username or password is incorrect"); 
     }
   }
 </script>
