@@ -5,6 +5,7 @@
   import { goto } from '$app/navigation';
   import { Plus, Search } from 'lucide-svelte';
   import * as api from '$lib/api/users';
+  import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
   let filteredUsers: any[] = []; // Users filtered based on search
 
 
@@ -27,6 +28,19 @@
   let query = '';
   $: displayUsers = query.trim() ? filteredUsers : users;
   let usersOfSearch = [];
+
+  let selectedUser:any;
+  let showResetModal = false;
+
+  function handleResetSuccess() {
+    alert("Password reset successful!");
+    // optionally refresh users list
+  }
+
+  function openResetModal(user:any) {
+    selectedUser = user;
+    showResetModal = true;
+  }
 
   // Toggle create form visibility
   function toggleCreateForm() {
@@ -129,6 +143,26 @@
       alert("Failed to delete user");
     }
   }
+
+  async function startPasswordReset(userId: number, username: string) {
+  const newPassword = prompt("Enter new password for this user:"+ username);
+  if (!newPassword) return;
+
+  const res = await fetch(`http://localhost:5000/users/${userId}/reset-password`, {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: newPassword }),
+  });
+
+  if (res.ok) {
+    alert("Password reset successful");
+  } else {
+    const err = await res.json();
+    alert(`Error: ${err.error}`);
+  }
+}
+
 </script>
 
 
@@ -260,6 +294,8 @@
                   <td class="px-4 py-2 space-x-2 text-center">
                     <button on:click={() => startEdit(user)} class="text-blue-600 hover:underline">Edit</button>
                     <button on:click={() => deleteUser(user.id)} class="text-red-600 hover:underline">Delete</button>
+                    <!--<button on:click={() => startPasswordReset(user.id, user.username)} class="text-blue-500 hover:underline ml-2">Reset Password</button> -->
+                    <button class="text-blue-500 hover:underline ml-2" on:click={() => openResetModal(user)}>Reset Password</button>
                   </td>
                 {/if}
               </tr>
@@ -270,4 +306,12 @@
     </div>
   </main>
 {/if}
+
+
+<PasswordResetModal
+  user={selectedUser}
+  visible={showResetModal}
+  onClose={() => showResetModal = false}
+  onSuccess={handleResetSuccess}
+/>
 

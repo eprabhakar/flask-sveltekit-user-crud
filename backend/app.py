@@ -55,7 +55,7 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    user = User.query.filter_by(username=data['username']).first()
+    user = db.session.query(User).filter_by(username=data['username']).first()
     if user and check_password_hash(user.password_hash, data['password']):
         session['user_id'] = user.id
         return jsonify(user.to_dict())
@@ -71,7 +71,7 @@ def logout():
 def me():
     user_id = session.get('user_id')
     if user_id:
-        user = User.query.get(user_id)
+        user = db.session.get(User,user_id)
         return jsonify(user.to_dict())
     return jsonify({'user': None})
 
@@ -88,12 +88,12 @@ def list_users():
 @app.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     admin_id = session.get('user_id')
-    admin = User.query.get(admin_id)
+    admin = db.session.get(User,admin_id)
     if not admin or admin.role != 'admin':
         return jsonify({'error': 'Forbidden'}), 403
 
     data = request.json
-    user = User.query.get(user_id)
+    user = db.session.get(User,user_id)
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
@@ -106,11 +106,11 @@ def update_user(user_id):
 @app.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     admin_id = session.get('user_id')
-    admin = User.query.get(admin_id)
+    admin = db.session.get(User,admin_id)
     if not admin or admin.role != 'admin':
         return jsonify({'error': 'Forbidden'}), 403
 
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
@@ -121,7 +121,7 @@ def delete_user(user_id):
 @app.route('/user', methods=['POST'])
 def create_user():
     admin_id = session.get('user_id')
-    admin = User.query.get(admin_id)
+    admin = db.session.get(User, admin_id)
     if not admin or admin.role != 'admin':
         return jsonify({'error': 'Forbidden'}), 403
 
@@ -129,7 +129,7 @@ def create_user():
     if not all(k in data for k in ('username', 'email', 'password', 'role')):
         return jsonify({'error': 'Missing fields'}), 400
 
-    existing_user = User.query.filter(
+    existing_user = db.session.query(User).filter(
         (User.username == data['username']) | (User.email == data['email'])
     ).first()
     if existing_user:
@@ -145,6 +145,28 @@ def create_user():
     db.session.commit()
     return jsonify(new_user.to_dict()), 201
 
+@app.route('/users/<int:user_id>/reset-password', methods=['PUT'])
+def reset_password(user_id):
+    admin_id = session.get('user_id')
+    #admin = User.query.get(admin_id)
+    admin = db.session.get(User, admin_id)
+    if not admin or admin.role != 'admin':
+        return jsonify({'error': 'Forbidden'}), 403
+
+    data = request.get_json()
+    new_password = data.get('password')
+
+    if not new_password:
+        return jsonify({'error': 'Password required'}), 400
+
+    user = db.session.get(User, user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    user.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+
+    return jsonify({'message': 'Password reset successful'})
 
 
 if __name__ == '__main__':
