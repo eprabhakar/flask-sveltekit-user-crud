@@ -4,10 +4,25 @@
   import { Badge, Navbar, Button, Dropdown, DropdownItem } from 'flowbite-svelte';
   import { ChevronDownOutline } from "flowbite-svelte-icons";
   import UserList from './UserList.svelte';
+  import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
+
   
   export let user: { username: string;  avatar?: string };
 
   let showDropdown = false;
+
+  let selectedUser:any;
+  let showResetModal = false;
+
+  function handleResetSuccess() {
+    alert("Password reset successful!");
+    // optionally refresh users list
+  }
+
+  function openResetModal(user:any) {
+    selectedUser = user;
+    showResetModal = true;
+  }
 
   function toggleDropdown() {
     showDropdown = !showDropdown;
@@ -64,12 +79,19 @@
       <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow z-50">
         <a href="/profile" class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">Profile</a>
         <a href="/settings" class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">Settings</a>
-        <hr />
-        <button on:click={logout} class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</button>
+        <button class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" on:click={() => openResetModal(user)}>Change Password</button>
+        <button class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" on:click={logout} >Logout</button>
       </div>
     {/if}
+
   </div>
 </nav>
+    <PasswordResetModal
+      user={selectedUser}
+      visible={showResetModal}
+      onClose={() => showResetModal = false}
+      onSuccess={handleResetSuccess}
+    />
 <!-- Navbar class="bg-white border-b px-4">
   <div class="flex items-center justify-between w-full">
     <a href="/" class="text-xl font-semibold text-gray-800">MyApp</a>

@@ -303,15 +303,14 @@
           </tbody>
         </table>
       </div>
+      <PasswordResetModal
+        user={selectedUser}
+        visible={showResetModal}
+        onClose={() => showResetModal = false}
+        onSuccess={handleResetSuccess}
+      />
     </div>
   </main>
 {/if}
 
-
-<PasswordResetModal
-  user={selectedUser}
-  visible={showResetModal}
-  onClose={() => showResetModal = false}
-  onSuccess={handleResetSuccess}
-/>
 

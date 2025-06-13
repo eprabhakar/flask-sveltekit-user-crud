@@ -150,7 +150,7 @@ def reset_password(user_id):
     admin_id = session.get('user_id')
     #admin = User.query.get(admin_id)
     admin = db.session.get(User, admin_id)
-    if not admin or admin.role != 'admin':
+    if not admin:
         return jsonify({'error': 'Forbidden'}), 403
 
     data = request.get_json()

@@ -29,6 +29,8 @@
       error = "";
       onSuccess();
       onClose();
+      password = "";
+      confirmPassword = "";
     } else {
       const err = await res.json();
       alert('Error resetting password: ' + err.error);
@@ -38,9 +40,8 @@
 </script>
 
 {#if visible}
-  <div class="fixed inset-0 z-50 bg-gray bg-gray-100 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-      <h2 class="text-lg font-semibold mb-4">Reset Password for {user.username}</h2>
+  <div class="absolute top-20 left-1/2 transform -translate-x-1/2 z-50 p-6 bg-gray-100 shadow-lg rounded-md w-80">
+      <h2 class="text-lg text-blue-600 font-semibold mb-4">Reset Password for : {user.username}</h2>
 
       <input
         type="password"
@@ -63,6 +64,6 @@
         <button on:click={onClose} class="px-4 py-2 bg-gray-300 text-black rounded">Cancel</button>
         <button on:click={()=>resetPassword(user.id, password)} class="px-4 py-2 bg-blue-600 text-white rounded">Reset</button>
       </div>
-    </div>
+ 
   </div>
 {/if}

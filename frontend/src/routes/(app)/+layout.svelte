@@ -10,6 +10,7 @@
   import { session } from '$lib/stores/session';
   import Navbar from '$lib/components/Navbar.svelte';
   import { derived}  from 'svelte/store';
+  
 
   import { page }  from '$app/stores';
   // ...other imports and code...
@@ -17,6 +18,7 @@
 
 
   import { onMount } from 'svelte';
+
 
   // Sync server-provided user into store
   onMount(() => {
@@ -46,7 +48,7 @@
     console.log('Menu item clicked:', item.name + ' - href:', item.href, ' - action:', item.action);
     if (item.type === 'logout') {
       logout();
-    } else if (item.href) {
+    } else if(item.href) {
       goto(item.href);
     }
   }
