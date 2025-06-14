@@ -6,6 +6,12 @@
   import { Plus, Search } from 'lucide-svelte';
   import * as api from '$lib/api/users';
   import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
+  import { alert, alertType } from '$lib/stores/alerts';
+  import { displayAlert } from '$lib/stores/alerts';
+  import CustomAlert from '$lib/components/CustomAlert.svelte';
+
+  //$: show = $alert !== '';
+  let showAlert = false; // show alert state
   let filteredUsers: any[] = []; // Users filtered based on search
 
 
@@ -33,8 +39,11 @@
   let showResetModal = false;
 
   function handleResetSuccess() {
-    alert("Password reset successful!");
+    //alert("Password reset successful! from page.svelte");
     // optionally refresh users list
+    showAlert = true;
+    displayAlert('Password reset successful!', 'success');
+    setTimeout(() => showAlert=false, 3000);
   }
 
   function openResetModal(user:any) {
@@ -85,7 +94,15 @@
         error = String(e);
       }
     }
-  }
+    if (error) {
+      displayAlert(error, "error");
+    } else {
+      displayAlert("User created successfully!", "success");
+    }
+    showAlert=true;
+    setTimeout(() => showAlert=false, 3000);
+
+  }   
 
   // Load users on mount if user is logged in
   onMount(() => {
@@ -128,6 +145,13 @@
         error = String(e);
       }
     }
+    if (error) {
+      displayAlert(error, "error");
+    } else {
+      displayAlert("User updated successfully!", "success");
+    }
+    showAlert=true;
+    setTimeout(() => showAlert=false, 3000);
   }
 
 
@@ -139,32 +163,25 @@
     });
     if (res.ok) {
       users = users.filter((u) => u.id !== id);
+      displayAlert("User deleted successfully!", "success");
     } else {
-      alert("Failed to delete user");
+      //alert("Failed to delete user");
+      const err = await res.json();
+      if (err.error) {
+        displayAlert(err.error, "error");
+      } else {
+        displayAlert("Failed to delete user.", "error");
+      }
     }
   }
 
-  async function startPasswordReset(userId: number, username: string) {
-  const newPassword = prompt("Enter new password for this user:"+ username);
-  if (!newPassword) return;
-
-  const res = await fetch(`http://localhost:5000/users/${userId}/reset-password`, {
-    method: "PUT",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password: newPassword }),
-  });
-
-  if (res.ok) {
-    alert("Password reset successful");
-  } else {
-    const err = await res.json();
-    alert(`Error: ${err.error}`);
-  }
-}
-
 </script>
 
+{#if showAlert}
+  <div class="w-full max-w-5xl mx-auto mt-4">
+    <CustomAlert type={$alertType} message={$alert} />
+  </div>
+{/if}
 
 {#if !isAdmin}
   <UserList {users}/>
@@ -294,8 +311,7 @@
                   <td class="px-4 py-2 space-x-2 text-center">
                     <button on:click={() => startEdit(user)} class="text-blue-600 hover:underline">Edit</button>
                     <button on:click={() => deleteUser(user.id)} class="text-red-600 hover:underline">Delete</button>
-                    <!--<button on:click={() => startPasswordReset(user.id, user.username)} class="text-blue-500 hover:underline ml-2">Reset Password</button> -->
-                    <button class="text-blue-500 hover:underline ml-2" on:click={() => openResetModal(user)}>Reset Password</button>
+                    <button on:click={() => openResetModal(user)} class="text-blue-500 hover:underline ml-2" >Reset Password</button>
                   </td>
                 {/if}
               </tr>

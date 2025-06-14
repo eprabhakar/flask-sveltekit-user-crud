@@ -35,7 +35,7 @@ export async function createUser(data: {
   if (!res.ok) {
     //console.error("Error creating user:", res.status, res.statusText);
     const err = await res.json();
-    alert(err.error || "Failed to create user");
+    //alert(err.error || "Failed to create user");
     throw new Error(err.error);
   }
   return await res.json();

@@ -5,6 +5,10 @@
   import { ChevronDownOutline } from "flowbite-svelte-icons";
   import UserList from './UserList.svelte';
   import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
+  import { alert, alertType } from '$lib/stores/alerts';
+  import { displayAlert } from '$lib/stores/alerts';
+  import CustomAlert from '$lib/components/CustomAlert.svelte';
+
 
   
   export let user: { username: string;  avatar?: string };
@@ -13,15 +17,20 @@
 
   let selectedUser:any;
   let showResetModal = false;
+  let showAlert = false;
 
   function handleResetSuccess() {
-    alert("Password reset successful!");
+    showAlert = true;
+    displayAlert('Password reset successful!', 'success');
+    setTimeout(() => showAlert=false, 3000);
+    //alert("Password reset successful!");
     // optionally refresh users list
   }
 
   function openResetModal(user:any) {
     selectedUser = user;
     showResetModal = true;
+    showDropdown = false; // 
   }
 
   function toggleDropdown() {
@@ -45,7 +54,10 @@
     session.set({ user: null });
     goto('/login');
   }
+
 </script>
+
+
 
 <nav class="flex items-center justify-between px-6 py-3 bg-white rounded-1g shadow-md">
   <!-- div class="text-xl font-bold text-gray-800">Center for Distance Education</div --> 
@@ -86,21 +98,14 @@
 
   </div>
 </nav>
-    <PasswordResetModal
-      user={selectedUser}
-      visible={showResetModal}
-      onClose={() => showResetModal = false}
-      onSuccess={handleResetSuccess}
-    />
-<!-- Navbar class="bg-white border-b px-4">
-  <div class="flex items-center justify-between w-full">
-    <a href="/" class="text-xl font-semibold text-gray-800">MyApp</a>
-    <Button>Drop</Button>
-    <Dropdown simple>
-     
-      <DropdownItem href="/profile">Profile</DropdownItem>
-      <DropdownItem href="/settings">Settings</DropdownItem>
-      <DropdownItem onclick={logout} class="w-full text-left block px-4 py-2 hover:bg-gray-100">Log out</DropdownItem>
-    </Dropdown>
+<PasswordResetModal
+  user={selectedUser}
+  visible={showResetModal}
+  onClose={() => showResetModal = false}
+  onSuccess={handleResetSuccess}
+/>
+{#if showAlert}
+  <div class="w-full max-w-5xl mx-auto mt-4">
+    <CustomAlert type={$alertType} message={$alert} />
   </div>
-</Navbar -->
+{/if}
