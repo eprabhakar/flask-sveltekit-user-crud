@@ -2,11 +2,16 @@
 <script lang="ts">
   import "../../app.css";
   import { Search } from 'lucide-svelte';
+  import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
+
   export let users: any[] = [];
   let filteredUsers: any[] = []; // Users filtered based on search
   let query = '';
   $: displayUsers = query.trim() ? filteredUsers : users;
   let showSearchForm = false;
+
+  let selectedUser:any;
+  let showResetModal = false;
 
   // Toggle search form visibility
   function toggleSearchForm() {

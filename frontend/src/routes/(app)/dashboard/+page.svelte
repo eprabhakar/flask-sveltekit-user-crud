@@ -6,9 +6,11 @@
   import { Plus, Search } from 'lucide-svelte';
   import * as api from '$lib/api/users';
   import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
-  import { alert, alertType } from '$lib/stores/alerts';
-  import { displayAlert } from '$lib/stores/alerts';
+  import { alert, alertType, displayAlert } from '$lib/stores/alerts';
+  //import { displayAlert } from '$lib/stores/alerts';
   import CustomAlert from '$lib/components/CustomAlert.svelte';
+
+  type AlertType = "success" | "error" | "info" | "warning" | undefined;
 
   //$: show = $alert !== '';
   let showAlert = false; // show alert state
@@ -38,12 +40,14 @@
   let selectedUser:any;
   let showResetModal = false;
 
-  function handleResetSuccess() {
-    //alert("Password reset successful! from page.svelte");
-    // optionally refresh users list
+  function myAlert(message: string, type: AlertType) {
     showAlert = true;
-    displayAlert('Password reset successful!', 'success');
+    displayAlert(message, type);
     setTimeout(() => showAlert=false, 3000);
+  }
+
+  function handleResetSuccess() {
+    myAlert("Password reset successful!", "success");
   }
 
   function openResetModal(user:any) {
@@ -54,6 +58,8 @@
   // Toggle create form visibility
   function toggleCreateForm() {
     showCreateForm = !showCreateForm;
+    showSearchForm = false; 
+    query = ''; // Reset search query when showing create form
   }
 
   let showSearchForm = false;
@@ -61,6 +67,7 @@
   // Toggle search form visibility
   function toggleSearchForm() {
     showSearchForm = !showSearchForm;
+    showCreateForm = false; // Hide create form when showing search form
     if(!showSearchForm) {
       query = ''; // Reset search query when closing the form
       //loadUsers(); // Fetch all users again
@@ -95,13 +102,10 @@
       }
     }
     if (error) {
-      displayAlert(error, "error");
+      myAlert(error, "error");
     } else {
-      displayAlert("User created successfully!", "success");
+      myAlert("User created successfully!", "success");
     }
-    showAlert=true;
-    setTimeout(() => showAlert=false, 3000);
-
   }   
 
   // Load users on mount if user is logged in
@@ -138,6 +142,7 @@
       await api.updateUser(id, { username: editUsername, email: editEmail });
       await loadUsers();
       editing = null;
+      error = null;
     } catch (e) {
       if (e instanceof Error) {
         error = e.message;
@@ -146,14 +151,12 @@
       }
     }
     if (error) {
-      displayAlert(error, "error");
+      myAlert(error, "error");
     } else {
-      displayAlert("User updated successfully!", "success");
+      myAlert("User updated successfully!", "success");
     }
-    showAlert=true;
-    setTimeout(() => showAlert=false, 3000);
-  }
 
+  }
 
   async function deleteUser(id: number) {
     if (!confirm("Are you sure you want to delete this user?")) return;
@@ -163,14 +166,14 @@
     });
     if (res.ok) {
       users = users.filter((u) => u.id !== id);
-      displayAlert("User deleted successfully!", "success");
+      myAlert("User deleted successfully!", "success");
     } else {
       //alert("Failed to delete user");
       const err = await res.json();
       if (err.error) {
-        displayAlert(err.error, "error");
+        myAlert(err.error, "error");
       } else {
-        displayAlert("Failed to delete user.", "error");
+        myAlert("Failed to delete user.", "error");
       }
     }
   }

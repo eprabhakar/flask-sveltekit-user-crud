@@ -8,19 +8,26 @@
   import { alert, alertType } from '$lib/stores/alerts';
   import { displayAlert } from '$lib/stores/alerts';
   import CustomAlert from '$lib/components/CustomAlert.svelte';
+  import { dropdownOpen } from '$lib/stores/dropdown';
+  import { onMount, onDestroy } from 'svelte';
 
 
   
   export let user: { username: string;  avatar?: string };
 
   let showDropdown = false;
+  let isOpen: boolean;
 
   let selectedUser:any;
   let showResetModal = false;
   let showAlert = false;
 
+  const unsubscribe = dropdownOpen.subscribe(value => {
+    showDropdown = value;
+  });
+
   function handleResetSuccess() {
-    showAlert = true;
+    showAlert = true;    
     displayAlert('Password reset successful!', 'success');
     setTimeout(() => showAlert=false, 3000);
     //alert("Password reset successful!");
@@ -34,8 +41,31 @@
   }
 
   function toggleDropdown() {
-    showDropdown = !showDropdown;
+    dropdownOpen.set(showDropdown);
+    showDropdown = !showDropdown;   
   }
+
+  // Optional: clean up
+  onDestroy(() => {
+    unsubscribe();
+  });
+
+  // Close dropdown when clicking outside
+  onMount(() => {
+     function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement | null;
+      if (
+        target &&
+        !target.closest('.dropdown') &&
+        !target.closest('button')
+      ) {
+        dropdownOpen.set(false);
+        showDropdown = false;
+      }
+    }
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  });
   
 
   function handleExternalLink(url:string) {
