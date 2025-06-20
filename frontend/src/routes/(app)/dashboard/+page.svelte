@@ -84,7 +84,10 @@
       } else {
         error = String(e);
       }
-      console.error("Failed to load users:", error);
+      if (error) {
+        myAlert(error, "error");
+        console.error("Failed to load users:", error);
+      }      
     }
   }
 

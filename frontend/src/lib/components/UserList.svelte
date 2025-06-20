@@ -2,7 +2,6 @@
 <script lang="ts">
   import "../../app.css";
   import { Search } from 'lucide-svelte';
-  import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
 
   export let users: any[] = [];
   let filteredUsers: any[] = []; // Users filtered based on search
