@@ -3,29 +3,22 @@
   import { session } from '$lib/stores/session';
   import { Badge } from 'flowbite-svelte';
   import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
-  import { alert, alertType } from '$lib/stores/alerts';
   import { displayAlert } from '$lib/stores/alerts';
-  import CustomAlert from '$lib/components/CustomAlert.svelte';
   import { dropdownOpen } from '$lib/stores/dropdown';
   import { onMount, onDestroy } from 'svelte';
 
   export let user: { username: string;  avatar?: string };
 
   let showDropdown = false;
-  let isOpen: boolean;
-
   let selectedUser:any;
   let showResetModal = false;
-  let showAlert = false;
 
   const unsubscribe = dropdownOpen.subscribe(value => {
     showDropdown = value;
   });
 
   function handleResetSuccess() {
-    showAlert = true;    
     displayAlert('Password reset successful!', 'success');
-    setTimeout(() => showAlert=false, 3000);
   }
 
   function openResetModal(user:any) {
@@ -125,8 +118,3 @@
   onClose={() => showResetModal = false}
   onSuccess={handleResetSuccess}
 />
-{#if showAlert}
-  <div class="w-full max-w-5xl mx-auto mt-4">
-    <CustomAlert type={$alertType} message={$alert} />
-  </div>
-{/if}

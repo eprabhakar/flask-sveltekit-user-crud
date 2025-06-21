@@ -1,25 +1,16 @@
 <script lang="ts">
-  import CustomAlert from '$lib/components/CustomAlert.svelte';
-  import { alert, alertType } from '$lib/stores/alerts';
-  import { displayAlert } from '$lib/stores/alerts';
   export let user: any;
   export let visible: boolean;
   export let onClose: () => void;
   export let onSuccess: () => void;
-  //$: show = $alert !== '';
 
   let password = "";
   let confirmPassword = "";
   let error = "";
 
-  //let showAlert = false;
-  let alertMessage = "User created successfully!";
-  //let showAlert = false;
-
   function closeAlert() {
     password = "";
     confirmPassword = "";
-    //showAlert = false;
   }
 
   async function resetPassword(userId: number, password: string) {
@@ -45,26 +36,16 @@
       onClose();
       password = "";
       confirmPassword = "";
-      alertMessage = "Password reset successfull!";
-      //showAlert = true;
-      //displayAlert(alertMessage, 'success');
-      //showAlert=true
     } else {
       const err = await res.json();
       password = "";
       confirmPassword = "";
-      //displayAlert(err.error || "Failed to reset password.", "error");
-      //showAlert = true;
       error = err.error || "Failed to reset password.";
     }
-    //setTimeout(() => showAlert=false, 3000);
     closeAlert();
   }
 
-
 </script>
-
-
 
 {#if visible}
   <div class="absolute top-20 left-1/2 transform -translate-x-1/2 z-50 p-6 bg-gray-100 shadow-lg rounded-md w-80">

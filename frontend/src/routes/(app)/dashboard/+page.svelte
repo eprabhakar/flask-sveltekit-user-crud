@@ -7,18 +7,10 @@
   import * as api from '$lib/api/users';
   import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
   import { alert, alertType, displayAlert } from '$lib/stores/alerts';
-  //import { displayAlert } from '$lib/stores/alerts';
   import CustomAlert from '$lib/components/CustomAlert.svelte';
   import SearchForm from "$lib/components/SearchForm.svelte";
 
-
-  type AlertType = "success" | "error" | "info" | "warning" | undefined;
-
-  //$: show = $alert !== '';
-  let showAlert = false; // show alert state
   let filteredUsers: any[] = []; // Users filtered based on search
-
-
   let users: any[] = [];
   let error: string | null = null;
   let editing: number | null = null;
@@ -37,24 +29,22 @@
 
   let query = '';
   $: displayUsers = query.trim() ? filteredUsers : users;
-  let usersOfSearch = [];
 
   let selectedUser:any;
   let showResetModal = false;
   
   function handleSearch(queryString:string) {
-    query = queryString;
-    handleSearchInput();
+    query = queryString.trim();
+    const lowerQuery = queryString.toLowerCase();
+    filteredUsers = users.filter(user =>
+      user.username.toLowerCase().includes(lowerQuery) ||
+      user.email.toLowerCase().includes(lowerQuery)
+    );
   }
 
-  function myAlert(message: string, type: AlertType) {
-    showAlert = true;
-    displayAlert(message, type);
-    setTimeout(() => showAlert=false, 3000);
-  }
-
+  // Handle password reset success
   function handleResetSuccess() {
-    myAlert("Password reset successful!", "success");
+    displayAlert("Password reset successful!", "success");
   }
 
   function openResetModal(user:any) {
@@ -77,7 +67,6 @@
     showCreateForm = false; // Hide create form when showing search form
     if(!showSearchForm) {
       query = ''; // Reset search query when closing the form
-      //loadUsers(); // Fetch all users again
     }
   }
 
@@ -92,7 +81,7 @@
         error = String(e);
       }
       if (error) {
-        myAlert(error, "error");
+        displayAlert(error, "error");
         console.error("Failed to load users:", error);
       }      
     }
@@ -112,9 +101,10 @@
       }
     }
     if (error) {
-      myAlert(error, "error");
+      displayAlert(error, "error");
+      
     } else {
-      myAlert("User created successfully!", "success");
+      displayAlert("User created successfully!", "success");
     }
   }   
 
@@ -127,15 +117,6 @@
     else goto("/login");
   });
 
-  // Filter users based on search query
-  function handleSearchInput() {
-    const lowerQuery = query.toLowerCase();
-    filteredUsers = users.filter(user =>
-      user.username.toLowerCase().includes(lowerQuery) ||
-      user.email.toLowerCase().includes(lowerQuery)
-    );
-    
-  }
   // Start editing a user
   function startEdit(u: any) {
     editing = u.id;
@@ -157,9 +138,9 @@
       }
     }
     if (error) {
-      myAlert(error, "error");
+      displayAlert(error, "error");
     } else {
-      myAlert("User updated successfully!", "success");
+      displayAlert("User updated successfully!", "success");
     }
 
   }
@@ -172,21 +153,21 @@
     });
     if (res.ok) {
       users = users.filter((u) => u.id !== id);
-      myAlert("User deleted successfully!", "success");
+      displayAlert("User deleted successfully!", "success");
     } else {
       //alert("Failed to delete user");
       const err = await res.json();
       if (err.error) {
-        myAlert(err.error, "error");
+        displayAlert(err.error, "error");
       } else {
-        myAlert("Failed to delete user.", "error");
+        displayAlert("Failed to delete user.", "error");
       }
     }
   }
 
 </script>
 
-{#if showAlert}
+{#if $alert}
   <div class="w-full max-w-5xl mx-auto mt-4">
     <CustomAlert type={$alertType} message={$alert} />
   </div>

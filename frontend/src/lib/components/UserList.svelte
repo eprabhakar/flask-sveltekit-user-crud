@@ -6,16 +6,17 @@
 
   export let users: any[] = [];
   let filteredUsers: any[] = []; // Users filtered based on search
-  let query = '';
+  let query: string = ''; // Search query input by the user
   $: displayUsers = query.trim() ? filteredUsers : users;
   let showSearchForm = false;
 
-  let selectedUser:any;
-  let showResetModal = false;
-  
   function handleSearch(queryString:string) {
-    query = queryString;
-    handleSearchInput();
+    query = queryString.trim();
+    const lowerQuery = queryString.toLowerCase();
+    filteredUsers = users.filter(user =>
+      user.username.toLowerCase().includes(lowerQuery) ||
+      user.email.toLowerCase().includes(lowerQuery)
+    );
   }
 
   // Toggle search form visibility
@@ -27,15 +28,6 @@
     }
   }
 
-  // Filter users based on search query
-  function handleSearchInput() {
-    const lowerQuery = query.toLowerCase();
-    filteredUsers = users.filter(user =>
-      user.username.toLowerCase().includes(lowerQuery) ||
-      user.email.toLowerCase().includes(lowerQuery)
-    );
-    
-  }
 </script>
 
 <main class="flex-1 overflow-auto ">
