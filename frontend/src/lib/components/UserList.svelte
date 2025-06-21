@@ -2,6 +2,7 @@
 <script lang="ts">
   import "../../app.css";
   import { Search } from 'lucide-svelte';
+  import SearchForm from "./SearchForm.svelte";
 
   export let users: any[] = [];
   let filteredUsers: any[] = []; // Users filtered based on search
@@ -11,6 +12,11 @@
 
   let selectedUser:any;
   let showResetModal = false;
+  
+  function handleSearch(queryString:string) {
+    query = queryString;
+    handleSearchInput();
+  }
 
   // Toggle search form visibility
   function toggleSearchForm() {
@@ -21,10 +27,6 @@
     }
   }
 
-    // Handle search form submission
-  async function handleSearchSubmit() {
-    handleSearchInput();
-  }
   // Filter users based on search query
   function handleSearchInput() {
     const lowerQuery = query.toLowerCase();
@@ -62,27 +64,9 @@
       </div>
       
       {#if showSearchForm}
-        <div class="mt-4 px-2">
-          <form on:submit|preventDefault={handleSearchSubmit} class="w-full max-w-md mb-6 flex gap-2">
-            <div class="relative flex-grow">
-              <input 
-                type="text" 
-                bind:value={query} 
-                placeholder="username or email" 
-                class="text-sm px-2 py-1 border border-gray-200 w-full"
-              />
-            </div>
-            <button
-              type="submit"
-              class="text-sm bg-gray-100 hover:bg-gray-300 text-black py-1 px-2"
-            >
-              Search
-            </button>
-          </form>
-        </div>
+        <SearchForm onSearch={handleSearch} />
       {/if}
-
-
+ 
       <!-- Main Content Below Header -->
       <div class="p-2  bg-white">
         <!-- You can replace this with your dynamic content -->

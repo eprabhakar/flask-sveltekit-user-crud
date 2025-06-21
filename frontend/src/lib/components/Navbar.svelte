@@ -1,9 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { session } from '$lib/stores/session';
-  import { Badge, Navbar, Button, Dropdown, DropdownItem } from 'flowbite-svelte';
-  import { ChevronDownOutline } from "flowbite-svelte-icons";
-  import UserList from './UserList.svelte';
+  import { Badge } from 'flowbite-svelte';
   import PasswordResetModal from '$lib/components/PasswordResetModal.svelte';
   import { alert, alertType } from '$lib/stores/alerts';
   import { displayAlert } from '$lib/stores/alerts';
@@ -11,8 +9,6 @@
   import { dropdownOpen } from '$lib/stores/dropdown';
   import { onMount, onDestroy } from 'svelte';
 
-
-  
   export let user: { username: string;  avatar?: string };
 
   let showDropdown = false;
@@ -30,8 +26,6 @@
     showAlert = true;    
     displayAlert('Password reset successful!', 'success');
     setTimeout(() => showAlert=false, 3000);
-    //alert("Password reset successful!");
-    // optionally refresh users list
   }
 
   function openResetModal(user:any) {
@@ -67,7 +61,6 @@
     return () => document.removeEventListener('click', handleClickOutside);
   });
   
-
   function handleExternalLink(url:string) {
     const confirmLeave = confirm(`You are about to leave this site and go to:\n\n${url}\n\nDo you want to continue?`);
     if (confirmLeave) {
@@ -86,8 +79,6 @@
   }
 
 </script>
-
-
 
 <nav class="flex items-center justify-between px-6 py-3 bg-white rounded-1g shadow-md">
   <!-- div class="text-xl font-bold text-gray-800">Center for Distance Education</div --> 
