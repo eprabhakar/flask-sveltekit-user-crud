@@ -9,6 +9,8 @@
   import { alert, alertType, displayAlert } from '$lib/stores/alerts';
   import CustomAlert from '$lib/components/CustomAlert.svelte';
   import SearchForm from "$lib/components/SearchForm.svelte";
+  import UserBadgeUploader from '$lib/components/UserBadgeUploader.svelte';
+
 
   let filteredUsers: any[] = []; // Users filtered based on search
   let users: any[] = [];
@@ -32,6 +34,43 @@
 
   let selectedUser:any;
   let showResetModal = false;
+
+  let selectedFile: File | null = null;
+  let userId = ''; // get from session or prop
+  let status = '';
+
+  function handleUploadComplete(event:any) {
+    const { success, file } = event.detail;
+    if (success) {
+      console.log('Uploaded avatar:', file.file_key);
+    }
+  }
+
+  async function handleUpload() {
+    if (!selectedFile) {
+      status = 'Please select a file';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('user_id', userId);
+
+    const res = await fetch('http://localhost:5000/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      status = `Upload successful! Key: ${data.file_key}`;
+      displayAlert( status, "success");
+
+    } else {
+      const err = await res.json();
+      status = `Upload failed: ${err.error}`;
+    }
+  }
   
   function handleSearch(queryString:string) {
     query = queryString.trim();
@@ -257,6 +296,7 @@
         <table class="min-w-full  border border-gray-200 border-collapse divide-y divide-gray-200">
           <thead class="bg-gray-100">
             <tr>
+              <th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Badge</th>
               <th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Name</th>
               <th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Email</th>
               <th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Role</th>
@@ -278,6 +318,14 @@
                     <button on:click={() => (editing = null)} class="text-gray-500 hover:underline">Cancel</button>
                   </td>
                 {:else}
+                  <td class="px-4 py-2 text-sm text-gray-900 font-medium">
+                    <UserBadgeUploader 
+                      userId={user.id} 
+                      avatarUrl={user.avatar} 
+                      on:UploadComplete={handleUploadComplete} 
+                      on:FileSelected={(e) => selectedFile = e.detail.file}
+                    />
+                  </td>
                   <td class="px-4 py-2 text-sm text-gray-900">{user.username}</td>
                   <td class="px-4 py-2 text-sm text-gray-600">{user.email}</td>
                   <td class="px-4 py-2 text-sm text-gray-600">{user.role}</td>

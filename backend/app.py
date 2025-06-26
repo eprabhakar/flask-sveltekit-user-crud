@@ -1,15 +1,15 @@
 import os
+import boto3
 from flask import  Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from models import db, User
 from dotenv import load_dotenv
 from flask import abort
 
 load_dotenv()
-
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -17,6 +17,26 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app, supports_credentials=True)
 db.init_app(app)
+
+s3 = boto3.client('s3',
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    region_name=os.getenv('AWS_REGION')
+    )
+bucket_name = os.environ.get('S3_BUCKET', 'my-cdev-bucket')
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    file = request.files['file']
+    user_id = request.form.get('user_id')
+
+    if file:
+        filename = secure_filename(file.filename)
+        key = f"{user_id}/{filename}"  # e.g. 1234/passport.pdf
+
+        s3.upload_fileobj(file, bucket_name, key)
+        return jsonify({"message": "Uploaded", "file_key": key})
+    return jsonify({"error": "No file uploaded"}), 400
 
 @app.route('/search', methods=['GET'])
 def search_users():
