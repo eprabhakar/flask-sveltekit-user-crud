@@ -296,7 +296,7 @@
         <table class="min-w-full  border border-gray-200 border-collapse divide-y divide-gray-200">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Badge</th>
+              <!--th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Badge</th-->
               <th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Name</th>
               <th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Email</th>
               <th class="px-4 border border-gray-200 py-2 text-left text-sm font-semibold text-gray-700">Role</th>
@@ -318,14 +318,14 @@
                     <button on:click={() => (editing = null)} class="text-gray-500 hover:underline">Cancel</button>
                   </td>
                 {:else}
-                  <td class="px-4 py-2 text-sm text-gray-900 font-medium">
+                  <!--td class="px-4 py-2 text-sm text-gray-900 font-medium">
                     <UserBadgeUploader 
                       userId={user.id} 
                       avatarUrl={user.avatar} 
                       on:UploadComplete={handleUploadComplete} 
                       on:FileSelected={(e) => selectedFile = e.detail.file}
                     />
-                  </td>
+                  </td-->
                   <td class="px-4 py-2 text-sm text-gray-900">{user.username}</td>
                   <td class="px-4 py-2 text-sm text-gray-600">{user.email}</td>
                   <td class="px-4 py-2 text-sm text-gray-600">{user.role}</td>
