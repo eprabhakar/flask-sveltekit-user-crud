@@ -1,0 +1,11 @@
+[2025-07-01 08:07:24 +0000] [3656] [INFO] Starting gunicorn 23.0.0
+[2025-07-01 08:07:24 +0000] [3656] [INFO] Listening at: http://127.0.0.1:5000 (3656)
+[2025-07-01 08:07:24 +0000] [3656] [INFO] Using worker: eventlet
+[2025-07-01 08:07:24 +0000] [3659] [INFO] Booting worker with pid: 3659
+[2025-07-01 08:07:24 +0000] [3660] [INFO] Booting worker with pid: 3660
+[2025-07-01 08:07:24 +0000] [3661] [INFO] Booting worker with pid: 3661
+[2025-07-01 08:13:58 +0000] [3656] [INFO] Handling signal: term
+[2025-07-01 08:13:59 +0000] [3659] [INFO] Worker exiting (pid: 3659)
+[2025-07-01 08:13:59 +0000] [3660] [INFO] Worker exiting (pid: 3660)
+[2025-07-01 08:13:59 +0000] [3661] [INFO] Worker exiting (pid: 3661)
+[2025-07-01 08:14:00 +0000] [3656] [INFO] Shutting down: Master

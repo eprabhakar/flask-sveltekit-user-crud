@@ -23,7 +23,7 @@
       return;
     }
 
-    const res = await fetch(`http://localhost:5000/users/${userId}/reset-password`, {
+    const res = await fetch(`/api/users/${userId}/reset-password`, {
       method: "PUT",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

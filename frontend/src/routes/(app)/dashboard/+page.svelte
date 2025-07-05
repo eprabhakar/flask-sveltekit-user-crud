@@ -186,7 +186,7 @@
 
   async function deleteUser(id: number) {
     if (!confirm("Are you sure you want to delete this user?")) return;
-    const res = await fetch(`http://localhost:5000/users/${id}`, {
+    const res = await fetch(`/api/users/${id}`, {
       method: "DELETE",
       credentials: "include",
     });

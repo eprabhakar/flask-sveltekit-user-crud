@@ -14,7 +14,7 @@
     }
 
     try {
-      const res = await fetch('http://localhost:5000/users', {
+      const res = await fetch('/api/users', {
         credentials: 'include'
       });
       if (!res.ok) {

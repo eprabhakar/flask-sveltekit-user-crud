@@ -16,7 +16,7 @@
 
   async function login() {
     error = '';
-    const res = await fetch('http://localhost:5000/login', {
+    const res = await fetch('/api/login', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

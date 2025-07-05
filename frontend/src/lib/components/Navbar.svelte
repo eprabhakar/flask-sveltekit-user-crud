@@ -63,7 +63,7 @@
 
   async function logout() {
     console.log('Logging out...');
-    await fetch('http://localhost:5000/logout', {
+    await fetch('/api/logout', {
       method: 'POST',
       credentials: 'include'
     });

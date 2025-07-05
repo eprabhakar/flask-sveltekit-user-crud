@@ -2,13 +2,12 @@ import os
 import boto3
 from flask import  Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from models import db, User
 from dotenv import load_dotenv
 from flask import abort
-
 load_dotenv()
 
 
@@ -17,7 +16,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True,origins=['http://localhost:5173', 'http://srv888073.hstgr.cloud/'])
 db.init_app(app)
 
 s3 = boto3.client('s3',

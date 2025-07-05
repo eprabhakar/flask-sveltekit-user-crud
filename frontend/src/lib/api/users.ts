@@ -1,5 +1,9 @@
 // src/lib/api/users.ts
 export let myname = "Prabhakar"
+
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
+//const apiBase = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
+
 let filteredUsers: any[] = []; // Users filtered based on search
 
 
@@ -13,7 +17,7 @@ export function handleSearchInput(data:{users: any[], query: string}) {
   }
 
 export async function fetchUsers() {
-  const res = await fetch("http://localhost:5000/users", {
+  const res = await fetch(`/api/users`, {
     credentials: "include"
   });
   if (!res.ok) throw new Error("Failed to fetch users");
@@ -26,7 +30,7 @@ export async function createUser(data: {
   password: string;
   role: string;
 }) {
-  const res = await fetch("http://localhost:5000/user", {
+  const res = await fetch(`/api/user`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -42,7 +46,7 @@ export async function createUser(data: {
 }
 
 export async function updateUser(id: number, data: { username: string; email: string }) {
-  const res = await fetch(`http://localhost:5000/users/${id}`, {
+  const res = await fetch(`/api/users/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -52,7 +56,7 @@ export async function updateUser(id: number, data: { username: string; email: st
 }
 
 export async function deleteUser(id: number) {
-  const res = await fetch(`http://localhost:5000/users/${id}`, {
+  const res = await fetch(`/api/users/${id}`, {
     method: "DELETE",
     credentials: "include"
   });
@@ -60,7 +64,7 @@ export async function deleteUser(id: number) {
 }
 
 export async function searchUsers(query: string) {
-  const res = await fetch(`http://localhost:5000/search?q=${encodeURIComponent(query)}`, {
+  const res = await fetch(`${PUBLIC_API_BASE_URL}/search?q=${encodeURIComponent(query)}`, {
     credentials: "include"
   });
   if (!res.ok) throw new Error("Search failed");

@@ -5,7 +5,7 @@
 
 
   export let userId: string;
-  export let uploadUrl: string = 'http://localhost:5000/upload';
+  export let uploadUrl: string = '/api/upload';
   export let avatarUrl: string | null = null; // Optional preview image
 
   const dispatch = createEventDispatcher();
